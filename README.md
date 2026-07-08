@@ -7,21 +7,29 @@ that built it, and gate every commit against standing invariants.
 
 ## Install
 
-Clone into your skills directory:
+This repo is a self-hosted marketplace containing one plugin. From inside
+Claude Code:
 
-```bash
-git clone https://github.com/udhaya21/orchestrate-work ~/.claude/skills/orchestrate-work
+```
+/plugin marketplace add udhaya21/orchestrate-work
+/plugin install orchestrate-work@orchestrate-work
 ```
 
-Claude Code picks up `SKILL.md` automatically. Fill in your own model
-rankings in its table — see [EXAMPLE.md](EXAMPLE.md) for a worked version.
+Once installed, fill in your own model rankings in `SKILL.md`'s table — see
+`EXAMPLE.md` for a worked version.
 
 ## What's in here
 
-- `SKILL.md` — the pattern itself: rank your fleet, route by the table,
-  require a bar, grade independently, gate before shipping.
-- `REFERENCE.md` — a starter set of standing invariants to adapt.
-- `EXAMPLE.md` — a real filled-in example, with credits.
+- `.claude-plugin/plugin.json` — the plugin manifest.
+- `.claude-plugin/marketplace.json` — self-hosts this repo as its own
+  marketplace listing.
+- `skills/orchestrate-work/SKILL.md` — the pattern itself: rank your fleet,
+  route by the table, require a bar, grade independently, gate before
+  shipping.
+- `skills/orchestrate-work/REFERENCE.md` — a starter set of standing
+  invariants to adapt.
+- `skills/orchestrate-work/EXAMPLE.md` — a real filled-in example, with
+  credits.
 
 ## Credits
 
