@@ -10,11 +10,13 @@ a different model than the one that built it.
 2. Rank each on three axes: **cost** (availability/rate-limit headroom, not
    just dollars), **intelligence** (how hard a problem it can handle
    unsupervised), **taste** (UI/UX, code quality, API design, prose).
-3. Route by the table below.
+3. Classify the task by type — decision, bulk, taste, review, analysis, or
+   loop — then route by the table below.
 4. Before delegating anything, write the pass/fail test. No test, no
    delegation.
-5. Grade with a different model than the one that built it.
-6. Before any commit/push, run the gate check.
+5. Send the delegate a full kickoff package, not just a prompt.
+6. Grade with a different model than the one that built it.
+7. Before any commit/push, run the gate check.
 
 ## Rank your fleet
 
@@ -35,20 +37,38 @@ instead of a per-task judgment call.
 
 ## Routing
 
-- **Decisions, planning, taste-critical synthesis** → your best-taste,
-  best-judgment model. Don't delegate the thinking itself.
-- **Bulk / mechanical work** (clear-spec implementation, migrations,
-  refactors) → your cheapest capable model. Spend it freely — that's the
-  point of ranking cost.
-- **User-facing work** (UI, copy, API design) → never your cheapest model.
-  Taste-critical output needs a taste-ranked model.
-- **Reviews** → a *different* model than the one that wrote the code.
-  Same-model review inherits the same blind spots.
-- **Token-hungry grunt work** (browser driving, log crunching, heavy
-  analysis) → offload it, and return only the conclusion — keep the raw dump
-  out of the main context.
+Classify first — pick the dominant type, then route:
+
+| type | what it covers | route |
+|------|----------------|-------|
+| **decision** | planning, architecture calls, synthesis, final judgments | your best-taste, best-judgment model — don't delegate the thinking itself |
+| **bulk** | clear-spec implementation, migrations, mechanical refactors, data crunching | your cheapest capable model — spend it freely, that's the point of ranking cost |
+| **taste** | UI, copy, API design — anything user-facing | a taste-ranked model, never your cheapest |
+| **review** | grading a plan, diff, or implementation | a *different* model than the one that built it — same-model review inherits the same blind spots |
+| **analysis** | token-hungry grunt work: log crunching, heavy codebase reads, browser driving | offload it; return only the conclusion, keep the raw dump out of the main context |
+| **loop** | long-running iterate-until-bar work | orchestrator sets the bar and grades; a cheap model builds each iteration |
+
+- **Bulk with a dependency chain** (e.g. schema change → codegen →
+  consumers): serialize *only* across the genuine dependency seam; fan out
+  the independent file groups on each side in parallel (isolated workspaces
+  when they'd touch overlapping files). Don't default to one giant
+  sequential pass.
 - **Escalate sideways before up.** When a cheap model's output falls short,
   try another cheap/mid model before reaching for your most expensive one.
+
+## Kickoff package
+
+Every delegation ships with, up front:
+
+- **The bar** — the pass/fail test.
+- **The floor** — the best prior artifact or trace to match and beat, so
+  you're not re-explaining what good looks like.
+- **Budgets, not permission-per-use** — spend limits declared once, so the
+  delegate never stops to ask.
+- **Where credentials live** — named at kickoff, same reason.
+- **Return conditions** — come back only if truly blocked or facing a
+  decision only the owner can make. Everything else: make the call and keep
+  moving.
 
 ## The bar
 
