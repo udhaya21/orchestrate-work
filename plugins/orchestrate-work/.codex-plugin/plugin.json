@@ -1,0 +1,11 @@
+{
+  "name": "orchestrate-work",
+  "description": "Decide which model or agent should handle a piece of work based on cost, intelligence, and taste tradeoffs, require a pass/fail bar before delegating, and gate every commit against standing invariants.",
+  "version": "1.0.0",
+  "author": {
+    "name": "udhaya21"
+  },
+  "homepage": "https://github.com/udhaya21/orchestrate-work",
+  "license": "MIT",
+  "skills": "./skills/"
+}

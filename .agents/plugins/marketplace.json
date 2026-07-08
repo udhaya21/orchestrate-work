@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "orchestrate-work",
-      "source": "./plugins/orchestrate-work",
+      "source": {
+        "source": "local",
+        "path": "./plugins/orchestrate-work"
+      },
       "description": "Decide which model or agent should handle a piece of work based on cost, intelligence, and taste tradeoffs, require a pass/fail bar before delegating, and gate every commit against standing invariants."
     }
   ]
