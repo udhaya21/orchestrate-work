@@ -4,8 +4,8 @@ A skill for deciding *who* does a piece of work before doing it — route by
 cost/intelligence/taste, require a pass/fail bar before delegating, grade
 with a different model than the one that built it, and gate every commit
 against standing invariants. Installable as a plugin in [Claude Code](https://claude.com/claude-code) and
-Codex CLI, and readable as plain instructions by anything that supports
-`AGENTS.md`.
+Codex CLI, as a standalone skill via `npx skills add`, and readable as plain
+instructions by anything that supports `AGENTS.md`.
 
 ## Install
 
@@ -22,6 +22,15 @@ Codex CLI, and readable as plain instructions by anything that supports
 codex plugin marketplace add udhaya21/orchestrate-work
 codex plugin add orchestrate-work@orchestrate-work
 ```
+
+**Any agent, via the [`skills` CLI](https://skills.sh):**
+
+```
+npx skills add udhaya21/orchestrate-work
+```
+
+Installs the skill straight into whichever agents you pick (Claude Code,
+Codex, Cursor, and others) — no plugin machinery needed.
 
 **Cursor, Aider, Windsurf, Gemini CLI, GitHub Copilot, or anything else that
 reads [`AGENTS.md`](AGENTS.md):** copy or symlink `AGENTS.md` into your
