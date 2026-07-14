@@ -67,6 +67,75 @@ Classify first — pick the dominant type, then route:
   work, offload that too. Don't drive a browser on your scarcest model just
   because the task is "checking" rather than "building".
 
+## Task granularity
+
+Chunk work into separate tasks by concern, even when each piece is small. A
+request listing several independent asks is several tasks, not one bundle to
+build and ship together — "it's small" is a reason it's cheap to keep
+separate, not a reason to merge it into something else.
+
+- **Test: "would reverting this alone make sense?"** If yes, it's its own
+  task/commit, regardless of size. Three trivial fixes are three
+  build-grade-commit cycles, not one.
+- **Bundling breaks bisectability and dilutes review.** One diff holding
+  several unrelated changes can't be reverted piecemeal, and a review pass
+  split across several concerns catches less on each than focused passes
+  would.
+- Reviewing/grading several small pieces together in one pass is fine — the
+  *commits* still split by concern before anything ships.
+- Applies inside a single delegation too: once a decision is locked, don't
+  silently build every resulting piece as one lump. Split the build the same
+  way you'd split the commits.
+
+## Agent teams: share context, don't re-read
+
+Deploying several agents against the same codebase without sharing what's
+already been found means each one re-reads and re-searches the same ground
+independently — tokens spent on rediscovery, not new work.
+
+- **Scout once, fan out from the summary.** Have one agent read the relevant
+  files first and hand the digest — paths, line numbers, excerpts — into
+  every later agent's prompt. Agents should arrive with what they need, not
+  re-derive it from scratch.
+- **Reuse a shared session/context where your tooling supports it**, instead
+  of spinning a fresh agent that re-reads everything from zero when it needs
+  the same grounding you already have.
+- **Pipeline over parallel-from-scratch** when work has a natural handoff:
+  downstream agents should receive the *result* of the previous stage, not
+  restart the search themselves.
+- If your orchestrator's agents don't share context by default, thread the
+  grounding through explicitly — a scout-stage result passed into every
+  prompt — rather than repeating "go read X again" in each one.
+
+## Bound every long-running task
+
+Any delegated agent should be scoped to finish soon. An unattended one can
+run away silently — this happened for real: a delegated task ran over 8
+hours unattended, which is not acceptable. A check that never stops anything
+is how that happens even with monitoring in place — the fix has to name the
+kill, not just the look.
+
+- **Scope for a short expected runtime up front.** The smaller and more
+  concrete the task (see Task granularity above), the sooner it finishes and
+  the less likely it ever needs the rules below.
+- **Short calls: use your tool's own timeout.** Most shell/agent tools cap
+  explicit timeouts at some ceiling (often around 10 minutes) — use it; that
+  covers short calls outright.
+- **Anything that could run longer: background it, then schedule a kill —
+  not just a scheduled check.** Launch it in the background and set a
+  check-in for the expected-duration deadline. If it's still running at that
+  check-in, that's not "still working," it's stuck — a sandbox limitation, a
+  retry loop, waiting on input it'll never get.
+- **When it's stuck: stop it and start a fresh one — don't keep waiting on
+  the same run.** Kill the stalled task, note briefly why it stalled so the
+  retry avoids the same trap, and launch a new attempt rather than resuming
+  or babysitting the original. A restarted task with a tighter scope usually
+  finishes; the same stuck run rarely recovers on its own.
+- **Long is fine; unattended is not.** A big migration can legitimately run
+  for hours, but only as an intentional, monitored choice with a real
+  stop-and-replace condition attached — never the default consequence of not
+  setting a bound.
+
 ## Routing to an out-of-family model
 
 Your orchestrator's `model` parameter may only accept models from one family
