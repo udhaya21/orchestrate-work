@@ -60,6 +60,30 @@ Classify first — pick the dominant type, then route:
   work, offload that too. Don't drive a browser on your scarcest model just
   because the task is "checking" rather than "building".
 
+## Routing to an out-of-family model
+
+Your orchestrator's `model` parameter may only accept models from one family
+(e.g. Claude-only, OpenAI-only). If your cheapest/bulk model lives outside
+that family and is reachable only through its own CLI or API, don't fight
+the parameter — wrap it:
+
+- **Spawn a thin, low-effort in-family wrapper agent** whose only job is to
+  write a self-contained prompt, invoke the out-of-family model via its
+  CLI/API, and return the result. Give the wrapper a schema if you need
+  structured output back.
+- **Label these agents distinctly** (e.g. a `bulk-model:` prefix) — your
+  orchestration UI will show the wrapper's in-family model, so the label is
+  the only sign of who actually did the work.
+- **Watch tool timeouts.** A long external run can outlast your shell tool's
+  default timeout; pass an explicit timeout, or run it in the background and
+  poll for a report file.
+- **Isolate parallel writers.** Parallel wrapper agents that edit files need
+  isolated workspaces (e.g. git worktrees) so their edits don't collide in a
+  shared checkout.
+- **Budget separately.** Token/spend tracking built into your orchestrator
+  usually only counts in-family tokens — external work is invisible to it,
+  so track its cost (or lack of one) on its own.
+
 ## Kickoff package
 
 Every delegation ships with, up front:
