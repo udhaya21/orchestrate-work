@@ -55,6 +55,10 @@ Classify first — pick the dominant type, then route:
   sequential pass.
 - **Escalate sideways before up.** When a cheap model's output falls short,
   try another cheap/mid model before reaching for your most expensive one.
+- **Verification counts as analysis.** When computer use — clicking through
+  the app, eyeballing a render — is the easiest way to complete *or verify*
+  work, offload that too. Don't drive a browser on your scarcest model just
+  because the task is "checking" rather than "building".
 
 ## Kickoff package
 
@@ -69,6 +73,9 @@ Every delegation ships with, up front:
 - **Return conditions** — come back only if truly blocked or facing a
   decision only the owner can make. Everything else: make the call and keep
   moving.
+- **Scope honesty** — the one other sanctioned stop: if the ask is too much
+  work at once, stop and state that clearly. Propose a split or a smaller
+  first slice instead of silently attempting the pile.
 
 ## The bar
 
